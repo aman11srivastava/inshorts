@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import {createMuiTheme, MuiThemeProvider} from '@material-ui/core/styles';
+import {createTheme, MuiThemeProvider} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
@@ -26,7 +26,7 @@ export function HamburgerDrawer({setCategory}: HamburgerDrawerProps) {
 
     const theme = React.useMemo(
         () =>
-            createMuiTheme({
+            createTheme({
                 palette: {
                     type: prefersDarkMode ? "dark" : "light",
                 },
