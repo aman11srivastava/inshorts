@@ -4,36 +4,40 @@ import Navbar from "./components/Navbar/Navbar";
 import {CategoryEnum, newsResultType} from "./utils/utils";
 import NewsContent from "./components/NewsContent/NewsContent";
 import axios from "axios";
-import {API_KEY} from "./config/config";
 import Footer from "./components/Footer/Footer";
 
 const App = () => {
     const [category, setCategory] = useState<CategoryEnum>(CategoryEnum.General);
-    const [newsInfo, setNewsInfo] = useState<newsResultType>();
+    const [newsInfo, setNewsInfo] = useState<newsResultType[]>([]);
     const [newsResults, setNewsResults] = useState<number>();
+    const [loadMore, setLoadMore] = useState<number>(20);
+    const [loading, setLoading] = useState<boolean>(true);
 
     const newsApi = async () => {
         try {
-            const news = await axios.get(`https://newsapi.org/v2/top-headlines?country=in&apiKey=${API_KEY}&category=${category}`)
+            setLoading(true);
+            const news = await axios.get(`${process.env.REACT_APP_API_URL}${process.env.REACT_APP_API_KEY}&category=${category}&pageSize=${loadMore}`)
             setNewsInfo(news.data.articles);
             setNewsResults(news.data.totalResults);
-        }
-        catch (error){
+            setLoading(false)
+        } catch (error) {
             console.log('Error ', error)
         }
     }
 
     useEffect(() => {
         newsApi();
-    }, [newsResults, category])
+    }, [newsResults, category, loadMore])
 
-  return (
-    <div className="App">
-        <Navbar setCategory={setCategory}/>
-        <NewsContent/>
-        <Footer/>
-    </div>
-  );
-};
+    return (
+        <div className="App">
+            <Navbar setCategory={setCategory}/>
+            <NewsContent newsInfo={newsInfo} newsResults={newsResults} loadMore={loadMore} setLoadMore={setLoadMore}
+                         loading={loading}/>
+            <Footer/>
+        </div>
+    );
+}
+;
 
 export default App;
